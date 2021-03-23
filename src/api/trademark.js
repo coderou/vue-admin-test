@@ -40,3 +40,11 @@ export function reqDeletTradmark(id) {
     method: 'delete'
   })
 }
+
+// 5.获取所有品牌列表
+export const reqGetAllTrademarkList = () => {
+  return request({
+    method: 'GET',
+    url: `/admin/product/baseTrademark/getTrademarkList`
+  })
+}

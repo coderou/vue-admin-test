@@ -97,7 +97,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import { reqGetTradmark, reqAddTradmark, reqDeletTradmark, reqUpdateTradmark } from '@/api/Product/trademark'
+import { reqGetTradmark, reqAddTradmark, reqDeletTradmark, reqUpdateTradmark } from '@/api/trademark'
 
 export default {
   name: 'Trademark',

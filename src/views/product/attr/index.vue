@@ -296,6 +296,7 @@ export default {
         categoryLevel: 3,
         id: row.id
       }
+      
       // this.attr=cloneDeep(row)
       // this.attrValueList = [...row.attrValueList]
       this.attrValueList = cloneDeep(row.attrValueList)
