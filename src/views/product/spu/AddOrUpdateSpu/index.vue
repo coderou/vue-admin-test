@@ -117,27 +117,26 @@
                 @close="row.spuSaleAttrValueList.splice(index, 1)"
                 >{{ tag.saleAttrValueName }}</el-tag
               >
-
               <el-input
                 class="input-newTag"
-                v-if="isInputTag"
-                :ref="`${row}`"
+                v-if="isInputTag && isThisRow($index)"
+                :ref="`${row.saleAttrName}`"
                 v-model="newAttrTag"
                 size="mini"
                 @keyup.enter.native="leaveInput(row)"
                 @blur="leaveInput(row)"
               ></el-input>
-
+              <!-- 添加属性值tag -->
               <el-button
                 size="mini"
                 icon="el-icon-plus"
-                @click="addSelectedAttrValue(row)"
+                @click="addSelectedAttrValue(row, $index)"
                 >添加</el-button
               >
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150">
-            <template v-slot="{ row, $index }">
+            <template v-slot="{ row }">
               <!-- 删除销售属性 -->
               <el-popconfirm
                 class="spu-pop"
@@ -177,6 +176,7 @@ export default {
 
   data() {
     return {
+      inputIndex: 0,
       // 工具人属性isInputTag
       isInputTag: false,
       // 工具人属性值tag
@@ -244,13 +244,19 @@ export default {
     })
   },
   methods: {
+    isThisRow(index) {
+      if (index === this.inputIndex) {
+        return true
+      }
+      return false
+    },
     toSpuList() {
       this.$emit('showSpuList')
     },
     // 光标离开输入框
     leaveInput(row) {
-      console.log(row)
-      const inputValue = this.$refs[`${row}`].value
+      // console.log(row)
+      const inputValue = this.$refs[`${row.saleAttrName}`].value
       if (inputValue === '') {
         this.$message.error('请添加属性')
         return
@@ -261,19 +267,21 @@ export default {
       this.newAttrTag = ''
       this.isInputTag = false
     },
-    // 添加选择的销售属性的属性值
-    addSelectedAttrValue(row) {
+    // 开启INPUT,添加选择的销售属性的属性值
+    addSelectedAttrValue(row, index) {
+      this.inputIndex = index
+      // console.log(row)
       this.isInputTag = true
       // console.log(row)
       // console.log(row.isInputTag)
-      if (this.isInputTag) {
-        this.$message.error('请完成输入后再添加')
-        return
-      }
+      // if (this.isInputTag) {
+      //   this.$message.error('请完成输入后再添加')
+      //   return
+      // }
       // console.log(row) // 当前行
       // console.log(this.spuSaleAttrList) // 当前行对应的数据
       this.$nextTick(() => {
-        this.$refs[`${row}`].focus()
+        this.$refs[`${row.saleAttrName}`].focus()
       })
     },
     // 删除属性:coderou
@@ -308,6 +316,9 @@ export default {
     handleRemove() {},
     // 添加销售属性
     addSaleAttr() {
+      // if (this.isInputTag) {
+      //   return
+      // }
       /*
         将现在选中的销售属性 spuForm.selectedSaleAttrId 从列表 selectedSaleAttrList 中移除
         将现在选中的销售属性 spuForm.selectedSaleAttrId 添加到table中显示 spuSaleAttrList
@@ -380,7 +391,7 @@ export default {
     // 上传图片成功
     handleAvatarSuccess(res, file) {
       // res 上传成功的响应
-      console.log(res, file)
+      // console.log(res, file)
       if (res.code === 200) {
         this.spuForm.spuImageList.push({
           imgUrl: res.data,

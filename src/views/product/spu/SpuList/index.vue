@@ -41,7 +41,11 @@
           <!-- 4.删除按钮 -->
           <!-- element-ui文档写错了 onConfirm -->
           <el-tooltip content="删除SPU" placement="bottom" effect="light">
-            <el-popconfirm class="spu-pop" :title="`确定要删除 xxx 属性值吗？`">
+            <el-popconfirm
+              class="spu-pop"
+              :title="`确定要删除 xxx 属性值吗？`"
+              @onConfirm="deleteSpu(row.id)"
+            >
               <!-- 必须使用具名插槽 -->
               <el-button
                 type="danger"
@@ -69,7 +73,7 @@
 
 <script type="text/ecmascript-6">
 import { mapState } from 'vuex'
-import { reqGetSpuList } from '@api/spu'
+import { reqGetSpuList, reqDeleteSpu } from '@api/spu'
 
 export default {
   name: 'SpuList',
@@ -144,9 +148,16 @@ export default {
     },
     addSpu() {
       this.$emit('showAddList')
+    },
+    async deleteSpu(id) {
+      console.log(id)
+      const res = await reqDeleteSpu(id)
+      this.$message.success('删除成功') // 提示删除成功
+      this.getSpuList() // 更新界面
     }
   },
   mounted() {
+    this.getSpuList() // 更新界面
     this.$bus.$on('updateSpuList', this.getSpuList)
   }
 }

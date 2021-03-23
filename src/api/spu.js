@@ -27,3 +27,10 @@ export const reqSetNewAttr = (data) => {
     data
   })
 }
+// 3.删除SPU
+export const reqDeleteSpu = (spuId) => {
+  return request({
+    method: 'DELETE',
+    url: `/admin/product/deleteSpu/${spuId}`
+  })
+}
