@@ -1,7 +1,9 @@
 <template>
   <el-card>
     <!-- 1.点击添加spu跳转到添加界面 -->
-    <el-button type="primary" icon="el-icon-plus" @click="addSpu">添加SPU</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="addSpu"
+      >添加SPU</el-button
+    >
     <!-- 2.展示spu的列表 -->
     <el-table
       class="spu-table"
@@ -67,10 +69,11 @@
 
 <script type="text/ecmascript-6">
 import { mapState } from 'vuex'
-import { reqGetSpuList } from "@api/spu";
+import { reqGetSpuList } from '@api/spu'
 
 export default {
   name: 'SpuList',
+
   data() {
     return {
       spuList: [
@@ -120,8 +123,9 @@ export default {
     // 分页器:改变当前页
     handleCurrentChange() {},
     // 数据:获取数据
-    async getSpuList(currentPage, pageSize) {
+    async getSpuList() {
       try {
+        const { currentPage, pageSize } = this
         // 开启加载动画
         this.loading = true
         const res = await reqGetSpuList({
@@ -138,8 +142,12 @@ export default {
         this.loading = false
       }
     },
-    addSpu(){
+    addSpu() {
+      this.$emit('showAddList')
     }
+  },
+  mounted() {
+    this.$bus.$on('updateSpuList', this.getSpuList)
   }
 }
 </script>

@@ -159,7 +159,7 @@
       <!-- 8.确定和取消 -->
       <el-form-item>
         <el-button type="primary" @click="addSpu">确定</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="toSpuList">取消</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -174,6 +174,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'AddOrUpdateSpu',
+
   data() {
     return {
       // 工具人属性isInputTag
@@ -243,6 +244,9 @@ export default {
     })
   },
   methods: {
+    toSpuList() {
+      this.$emit('showSpuList')
+    },
     // 光标离开输入框
     leaveInput(row) {
       console.log(row)
@@ -334,17 +338,24 @@ export default {
     // 最下面的确认按钮(最终校验,发送请求添加数据)
     addSpu() {
       this.$refs.spuForm.validate(async (status) => {
-        const data = {
-          category3Id: this.category3Id,
-          description: this.spuForm.description,
-          spuImageList: this.spuForm.spuImageList,
-          spuName: this.spuForm.spuName,
-          spuSaleAttrList: this.spuSaleAttrList,
-          tmId: this.spuForm.tmId
+        try {
+          // 整合data
+          const data = {
+            category3Id: this.category3Id,
+            description: this.spuForm.description,
+            spuImageList: this.spuForm.spuImageList,
+            spuName: this.spuForm.spuName,
+            spuSaleAttrList: this.spuSaleAttrList,
+            tmId: this.spuForm.tmId
+          }
+          // 传递数据
+          const res = await reqSetNewAttr(data)
+          this.$message.success('添加成功')
+          this.toSpuList()
+          this.$bus.$emit('updateSpuList')
+        } catch (e) {
+          console.log(e)
         }
-        console.log(data)
-        const res = await reqSetNewAttr(data)
-        console.log(res);
       })
     },
     // 图片数量校验

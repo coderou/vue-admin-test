@@ -3,9 +3,9 @@
     <!-- 三级导航 -->
     <CategorySelector :disabled="!isShowList && !isShowSpuList" />
     <!-- 商品展示 -->
-    <SpuList v-show="isShowSpuList" />
+    <SpuList v-show="isShowSpuList" @showAddList="showAddList" />
     <!-- 添加或者更新商品 -->
-    <AddOrUpdateSpu v-show="!isShowSpuList" />
+    <AddOrUpdateSpu v-show="!isShowSpuList" @showSpuList="showSpuList" />
   </div>
 </template>
 
@@ -19,7 +19,15 @@ export default {
   data() {
     return {
       isShowList: false,
-      isShowSpuList: false
+      isShowSpuList: true
+    }
+  },
+  methods: {
+    showSpuList() {
+      this.isShowSpuList = true
+    },
+    showAddList() {
+      this.isShowSpuList = false
     }
   }
 }
