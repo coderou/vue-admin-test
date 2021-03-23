@@ -45,7 +45,7 @@
       <!-- 5.手机销售属性 -->
       <el-form-item label="销售属性">
         <!-- 6.展示销售属性(静态4个) -->
-        <el-select :placeholder="`还剩${baseSaleAttrList.length}个销售属性`">
+        <el-select :placeholder="`还剩${baseSaleAttrList.length}个销售属性`" v-model="isAddingSaleAttr">
           <!-- 遍历baseSaleAttrList的属性,而不是base -->
           <el-option
             v-for="baseSaleAttr in baseSaleAttrList"
@@ -117,6 +117,7 @@ export default {
       baseSaleAttrList: [],
       // 2.基础销售属性(编辑中)
       saleAttrList: [],
+      isAddingSaleAttr:'',
       // 3.table要显示的销售属性和销售属性值列表
       spuSaleAttrList: [
         {
@@ -147,7 +148,7 @@ export default {
         description: [
           { required: true, message: '请输入SPU描述', trigger: 'blur' }
         ]
-      }
+      },
     }
   },
   methods: {
