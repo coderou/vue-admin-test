@@ -175,7 +175,6 @@ import {
   reqSetNewAttr,
   reqGetSpu,
   reqGetSpuImageList,
-  reqGetSpuSaleAttrList
 } from '@api/spu'
 import { mapState } from 'vuex'
 
@@ -393,8 +392,8 @@ export default {
       })
       // 4.清空 下拉框选择的数据
       this.spuForm.selectedSaleAttrId = ''
-      console.log(this.selectedSaleAttrList);
-      console.log(this.spuSaleAttrList);
+      // console.log(this.selectedSaleAttrList);
+      // console.log(this.spuSaleAttrList);
     },
     // 图片数量校验
     validator(rule, value, callback) {
@@ -455,13 +454,13 @@ export default {
       console.log(res)
       const img = await reqGetSpuImageList(row.id)
       console.log(img) */
-      console.log(123)
-      console.log(row.id)
+      // console.log(123)
+      // console.log(row.id)
       const res = await Promise.all([
         reqGetSpu(row.id),
         reqGetSpuImageList(row.id)
       ])
-      console.log(res)
+      // console.log(res)
       /* 
         spuForm: {
         spuName: '',
@@ -490,7 +489,7 @@ export default {
       this.$refs.spuForm.validate(async (status) => {
         if (!status) return
         const id = this.spuForm.id
-        console.log(id)
+        // console.log(id)
         // 整合data
         const data = {
           id: this.spuForm.id,

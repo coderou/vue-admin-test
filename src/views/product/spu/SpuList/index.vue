@@ -127,7 +127,6 @@ export default {
     editSpu(row) {
       this.$emit('update:isShowSpuList', false)
       this.$bus.$emit('receive',row)
-      console.log(1);
     },
     // 分页器:改变当前页数据量
     handleSizeChange(pageSize) {
@@ -150,7 +149,7 @@ export default {
           limit: pageSize, // 当前页数据
           category3Id: this.category3Id // c3Id
         })
-        console.log(res)
+        // console.log(res)
         this.total = res.data.total // 更新总数量
         this.spuList = res.data.records // 更新spu列表
       } catch {
