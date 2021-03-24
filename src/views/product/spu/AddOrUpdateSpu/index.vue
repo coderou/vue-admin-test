@@ -36,6 +36,7 @@
           2.限制上传图片的数量
             :limit="3" 限制数量
             :disabled="spuForm.spuImageList.length>=3" 禁用按钮
+              当上传到最大值的时候,禁用按钮会禁用删除功能
             :class="{ upload: spuForm.spuImageList.length >= 3 }" 隐藏按钮的样式
             <i class="el-icon-plus" v-show="spuForm.spuImageList.length < 3"></i> 隐藏按钮中图标
           3. 预览
@@ -52,7 +53,6 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
           :limit="MAX_IMAGE_LENGTH"
-          :disabled="spuForm.spuImageList.length >= MAX_IMAGE_LENGTH"
           :class="{ upload: spuForm.spuImageList.length >= MAX_IMAGE_LENGTH }"
         >
           <i
@@ -137,21 +137,15 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150">
-            <template v-slot="{ row }">
-              <!-- 删除销售属性 -->
-              <el-popconfirm
-                class="spu-pop"
-                :title="`确定要删除 xxx 属性值吗？`"
-                @onConfirm="deleteattrValue(row)"
-              >
-                <!-- 必须使用具名插槽 -->
-                <el-button
-                  type="danger"
-                  size="mini"
-                  icon="el-icon-delete"
-                  slot="reference"
-                ></el-button>
-              </el-popconfirm>
+            <template v-slot="{ row, $index }">
+              <!-- 必须使用具名插槽 -->
+              <el-button
+                type="danger"
+                size="mini"
+                icon="el-icon-delete"
+                slot="reference"
+                @click="deleteattrValue(row, $index)"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -174,7 +168,7 @@ import {
   reqUpdateNewAttr, // 更新spu
   reqSetNewAttr,
   reqGetSpu,
-  reqGetSpuImageList,
+  reqGetSpuImageList
 } from '@api/spu'
 import { mapState } from 'vuex'
 
@@ -189,7 +183,7 @@ export default {
       // 工具人属性值tag
       newAttrTag: '',
       // 常量:限制图片的最大数量
-      MAX_IMAGE_LENGTH: 10,
+      MAX_IMAGE_LENGTH: 3,
       // 1.基础销售属性(原数据)
       baseSaleAttrList: [],
       // 2.基础销售属性(编辑中)(已经移动到计算属性)
@@ -252,6 +246,8 @@ export default {
     formatImageList() {
       return this.spuForm.spuImageList.map((i) => {
         return {
+          // ...i, // 保留之前的数据
+          uid: i.uid, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
           name: i.imgName,
           url: i.imgUrl
         }
@@ -326,9 +322,9 @@ export default {
       })
     },
     // 删除属性:coderou
-    deleteattrValue(row) {
+    deleteattrValue(row, index) {
       // 点击删除的文字
-      // const { saleAttrName } = row
+      /*       // const { saleAttrName } = row
       // 下拉框属性
       // const { selectedSaleAttrId } = this.spuForm
       // console.log(selectedSaleAttrId)
@@ -337,14 +333,16 @@ export default {
       // console.log(this.spuForm) // 可获取下拉框的选中状态
       // console.log(this.baseSaleAttrList) // 所有列表
       // console.log(this.selectedSaleAttrList) // 当前下拉框可选择的列表
-      // console.log(this.spuSaleAttrList) // 当前正在进行添加属性值的列表
+      // console.log(this.spuSaleAttrList) // 当前正在进行添加属性值的列表 */
 
+      //删除一些bug
       // 1..更新可选下拉框区域
       const item = this.baseSaleAttrList.find((i) => {
         // 获取item
         return i.name === row.saleAttrName
       })
       this.selectedSaleAttrList.push(item) // 添加item
+
       // 2..更新列表区域
       this.spuSaleAttrList = this.spuSaleAttrList.filter((i) => {
         //删除item
@@ -352,9 +350,16 @@ export default {
       })
     },
     // 照片墙:预览图片
-    handlePictureCardPreview() {},
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
     // 照片墙:删除图片
-    handleRemove() {},
+    handleRemove(file) {
+      this.spuForm.spuImageList = this.spuForm.spuImageList.filter(
+        (image) => image.imgUrl !== file.response.data
+      )
+    },
     // 添加销售属性
     addSaleAttr() {
       // if (this.isInputTag) {
@@ -365,9 +370,9 @@ export default {
         将现在选中的销售属性 spuForm.selectedSaleAttrId 添加到table中显示 spuSaleAttrList
         将 spuForm.selectedSaleAttrId 变成 空
      */
-    // 1.下拉框选择的数据
+      // 1.下拉框选择的数据
       const { selectedSaleAttrId } = this.spuForm
-      
+
       // 2.从base中找到 下拉框选择的数据
       let selectedSaleAttr = this.baseSaleAttrList.find((i) => {
         return i.id === selectedSaleAttrId
@@ -377,12 +382,12 @@ export default {
       this.selectedSaleAttrList = this.selectedSaleAttrList.filter(
         (saleAttr) => {
           if (saleAttr.id !== selectedSaleAttrId) {
-            return true;
+            return true
           }
-          selectedSaleAttr = saleAttr;
-          return false;
+          selectedSaleAttr = saleAttr
+          return false
         }
-      );
+      )
 
       // 3.push 进去spu列表
       this.spuSaleAttrList.push({
@@ -420,6 +425,8 @@ export default {
       // console.log(res, file)
       if (res.code === 200) {
         this.spuForm.spuImageList.push({
+          // ...file, // 保留这些参数,不然会导致图片跳一跳的
+          uid: file.uid, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
           imgUrl: res.data,
           imgName: file.name
         })

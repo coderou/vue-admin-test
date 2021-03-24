@@ -163,8 +163,7 @@ export default {
       this.$emit('showAddList')
     },
     async deleteSpu(row) {
-      // console.log(row)
-      const res = await reqDeleteSpu(row)
+      const res = await reqDeleteSpu(row.id)
       this.$message.success('删除成功') // 提示删除成功
       this.getSpuList() // 更新界面
     }

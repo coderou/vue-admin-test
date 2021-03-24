@@ -86,3 +86,12 @@
   height: 178px;
   display: block;
 }
+
+// 上传图片属性
+.upload {
+  & > .el-upload--picture-card {
+    cursor: auto;
+    background-color: transparent;
+    border-color: transparent;
+  }
+}
