@@ -265,10 +265,14 @@ export default {
       // 将工具input的值赋值改row
       row.spuSaleAttrValueList.push({ saleAttrValueName: inputValue })
 
-      const RepeatCount = row.spuSaleAttrValueList.forEach((i) => {
-        console.log(i)
-      })
-
+      // 也不能重复[编辑状态的value在attr.valueName  保存的数据在this.valueNameList]
+      const isRepeatCount = row.spuSaleAttrValueList.reduce((p, c) => {
+        return p + (c.saleAttrValueName === inputValue ? 1 : 0)
+      }, 0)
+      if (isRepeatCount > 1) {
+        this.$message.warning('属性值不可以重复')
+        return
+      }
       // 清空工具值
       this.newAttrTag = ''
       this.isInputTag = false
