@@ -37,4 +37,15 @@
 23.🍟🍟牛客网(面试编程用的)
 24.sync的使用  :yourEventName.sync="yourEventName"
   this.$emit('update:yourEventName',data)
-25.
+25.native加了之后就是原生DOM事件,不加native就是自定义事件
+26.全局事件总线的原则:必须2个组件都存在  即:v-if有时候不行!!,因为$bus.$on还没有绑定事件,你$bus.$emit触发不了
+27.接下来做:  
+  1.更新api/spu.js的一系列接口
+  2.添加已经完成,完善修改的功能
+  3.传递的row.id改为row,还是要row传递一些数据
+  4.更新图片列表,处理图片列表
+    :file-list=".."
+    对图片格式是有要求的:url:'',name:...
+    所以要处理一下
+
+  5.

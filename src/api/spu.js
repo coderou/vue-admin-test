@@ -27,6 +27,14 @@ export const reqSetNewAttr = (data) => {
     data
   })
 }
+// 3.1更新Spu
+export const reqUpdateNewAttr = (data) => {
+  return request({
+    method: 'POST',
+    url: `/admin/product/updateSpuInfo`,
+    data
+  })
+}
 // 3.删除SPU
 export const reqDeleteSpu = (spuId) => {
   return request({
@@ -49,3 +57,19 @@ export const reqGetSpuImageList = (spuId) => {
     url: `/admin/product/spuImageList/${spuId}`
   })
 }
+
+// 5.获取图片列表
+// export const reqGetSpuImageList = spuId => {
+//   return request({
+//     method: "GET",
+//     url: `/admin/product/spuImageList/${spuId}`
+//   });
+// };
+
+// 6.获取销售属性列表数据
+export const reqGetSpuSaleAttrList = spuId => {
+  return request({
+    method: "GET",
+    url: `/admin/product/spuSaleAttrList/${spuId}`
+  });
+};

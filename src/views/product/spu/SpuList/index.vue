@@ -45,7 +45,7 @@
             <el-popconfirm
               class="spu-pop"
               :title="`确定要删除 xxx 属性值吗？`"
-              @onConfirm="deleteSpu(row.id)"
+              @onConfirm="deleteSpu(row)"
             >
               <!-- 必须使用具名插槽 -->
               <el-button
@@ -125,9 +125,9 @@ export default {
   methods: {
     // 修改SPU信息
     editSpu(row) {
-      // console.log(row)
       this.$emit('update:isShowSpuList', false)
-      this.$bus.$emit('editSpu',row.id)
+      this.$bus.$emit('receive',row)
+      console.log(1);
     },
     // 分页器:改变当前页数据量
     handleSizeChange(pageSize) {
@@ -163,9 +163,9 @@ export default {
     addSpu() {
       this.$emit('showAddList')
     },
-    async deleteSpu(id) {
-      console.log(id)
-      const res = await reqDeleteSpu(id)
+    async deleteSpu(row) {
+      // console.log(row)
+      const res = await reqDeleteSpu(row)
       this.$message.success('删除成功') // 提示删除成功
       this.getSpuList() // 更新界面
     }

@@ -43,16 +43,11 @@
           4. 删除
             :on-remove="handleRemove"
          -->
-        <img
-          v-for="image in spuForm.spuImageList"
-          :key="image.id"
-          :src="image.imgUrl"
-          :alt="image.imgName"
-        />
         <el-upload
           action="http://39.98.123.211/admin/product/fileUpload"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
+          :file-list="formatImageList"
           :on-remove="handleRemove"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -176,9 +171,11 @@ import { reqGetAllTrademarkList } from '@/api/trademark'
 // api:获取基础属性列表
 import {
   reqGetBaseSaleAttrList,
+  reqUpdateNewAttr, // 更新spu
   reqSetNewAttr,
   reqGetSpu,
-  reqGetSpuImageList
+  reqGetSpuImageList,
+  reqGetSpuSaleAttrList
 } from '@api/spu'
 import { mapState } from 'vuex'
 
@@ -196,8 +193,8 @@ export default {
       MAX_IMAGE_LENGTH: 10,
       // 1.基础销售属性(原数据)
       baseSaleAttrList: [],
-      // 2.基础销售属性(编辑中)
-      selectedSaleAttrList: [],
+      // 2.基础销售属性(编辑中)(已经移动到计算属性)
+      // selectedSaleAttrList: [],
       isAddingSaleAttr: '',
       // 3.当前正在编辑的销售属性
       spuSaleAttrList: [
@@ -244,6 +241,23 @@ export default {
     }
   },
   computed: {
+    // 实时将selecte进行计算?
+    selectedSaleAttrList() {
+      return this.baseSaleAttrList.filter((baseSaleAttr) => {
+        return !this.spuSaleAttrList.some((saleAttr) => {
+          return saleAttr.baseSaleAttrId === baseSaleAttr.id
+        })
+      })
+    },
+    // 将请求到的图片进行格式化,因为<el-upload支持的数据结构不同
+    formatImageList() {
+      return this.spuForm.spuImageList.map((i) => {
+        return {
+          name: i.imgName,
+          url: i.imgUrl
+        }
+      })
+    },
     saleAttrTip(row) {
       const { length } = this.selectedSaleAttrList
       return length === 0
@@ -352,51 +366,35 @@ export default {
         将现在选中的销售属性 spuForm.selectedSaleAttrId 添加到table中显示 spuSaleAttrList
         将 spuForm.selectedSaleAttrId 变成 空
      */
+    // 1.下拉框选择的数据
       const { selectedSaleAttrId } = this.spuForm
-
-      let saleAttrName
-
+      
+      // 2.从base中找到 下拉框选择的数据
+      let selectedSaleAttr = this.baseSaleAttrList.find((i) => {
+        return i.id === selectedSaleAttrId
+      })
+      // 2.1 删除selectedSaleAttrList中的重复数据
+      // tip:[在这里直接改计算属性selectedSaleAttrList是会报错no setter的]
       this.selectedSaleAttrList = this.selectedSaleAttrList.filter(
         (saleAttr) => {
           if (saleAttr.id !== selectedSaleAttrId) {
-            return true
+            return true;
           }
-
-          saleAttrName = saleAttr.name
-          return false
+          selectedSaleAttr = saleAttr;
+          return false;
         }
-      )
+      );
 
+      // 3.push 进去spu列表
       this.spuSaleAttrList.push({
-        saleAttrName,
+        baseSaleAttrId: selectedSaleAttr.id,
+        saleAttrName: selectedSaleAttr.name,
         spuSaleAttrValueList: []
       })
-
+      // 4.清空 下拉框选择的数据
       this.spuForm.selectedSaleAttrId = ''
-    },
-    // 最下面的确认按钮(最终校验,发送请求添加数据)
-    addSpu() {
-      this.$refs.spuForm.validate(async (status) => {
-        if (!status) return
-        try {
-          // 整合data
-          const data = {
-            category3Id: this.category3Id,
-            description: this.spuForm.description,
-            spuImageList: this.spuForm.spuImageList,
-            spuName: this.spuForm.spuName,
-            spuSaleAttrList: this.spuSaleAttrList,
-            tmId: this.spuForm.tmId
-          }
-          // 传递数据
-          const res = await reqSetNewAttr(data)
-          this.$message.success('添加成功')
-          this.toSpuList()
-          this.$bus.$emit('updateSpuList')
-        } catch (e) {
-          console.log(e)
-        }
-      })
+      console.log(this.selectedSaleAttrList);
+      console.log(this.spuSaleAttrList);
     },
     // 图片数量校验
     validator(rule, value, callback) {
@@ -452,11 +450,18 @@ export default {
       return isImageOK && isLt
     },
     // 修改SPU信息
-    async editSpu(spuId) {
-      const res = await reqGetSpu(spuId)
+    async editSpu(row) {
+      /* const res = await reqGetSpu(row.id)
       console.log(res)
-      const img = await reqGetSpuImageList(spuId)
-      console.log(img)
+      const img = await reqGetSpuImageList(row.id)
+      console.log(img) */
+      console.log(123)
+      console.log(row.id)
+      const res = await Promise.all([
+        reqGetSpu(row.id),
+        reqGetSpuImageList(row.id)
+      ])
+      console.log(res)
       /* 
         spuForm: {
         spuName: '',
@@ -471,17 +476,58 @@ export default {
         selectedSaleAttrId: '' // 选中的销售属性
       },
       */
-      this.spuForm.spuName = res.data.spuName
-      this.spuForm.spuImageList = img.data || []
-      console.log(this.spuForm)
-      this.spuForm.description = res.data.description
-      this.spuSaleAttrList = res.data.spuSaleAttrList
-      this.spuId = res.data.id
-      this.spuForm.tmId = res.data.tmId
+      this.spuForm.id = row.id
+      this.spuForm.spuName = res[0].data.spuName
+      this.spuForm.spuImageList = res[1].data || []
+      // console.log(this.spuForm)
+      this.spuForm.description = res[0].data.description
+      this.spuSaleAttrList = res[0].data.spuSaleAttrList
+      this.spuId = res[0].data.id
+      this.spuForm.tmId = res[0].data.tmId
+    },
+    // 最下面的确认按钮(最终校验,发送请求添加数据)
+    addSpu() {
+      this.$refs.spuForm.validate(async (status) => {
+        if (!status) return
+        const id = this.spuForm.id
+        console.log(id)
+        // 整合data
+        const data = {
+          id: this.spuForm.id,
+          category3Id: this.category3Id,
+          description: this.spuForm.description,
+          spuImageList: this.spuForm.spuImageList,
+          spuName: this.spuForm.spuName,
+          spuSaleAttrList: this.spuSaleAttrList,
+          tmId: this.spuForm.tmId
+        }
+        if (id) {
+          try {
+            data.id = id
+            // 传递数据
+            const res = await reqUpdateNewAttr(data)
+            this.$message.success('添加成功')
+            this.toSpuList()
+            this.$bus.$emit('updateSpuList')
+          } catch (e) {
+            console.log(e)
+          }
+        } else {
+          try {
+            // 传递数据
+            const res = await reqSetNewAttr(data)
+            this.$message.success('修改')
+            this.toSpuList()
+            this.$bus.$emit('updateSpuList')
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      })
     }
   },
   async mounted() {
-    this.$bus.$on('editSpu', this.editSpu)
+    this.$bus.$on('receive', this.editSpu)
     try {
       // Promise.all 方法特点：所有都成功，才成功，只要有一个失败就失败
       const resArr = await Promise.all([
@@ -491,7 +537,8 @@ export default {
 
       this.trademarkList = resArr[0].data // 更新商标列表
       this.baseSaleAttrList = resArr[1].data // 更新基础实现选择列表(原数据)
-      this.selectedSaleAttrList = resArr[1].data // 更新基础实现选择列表(编辑状态)
+      // selectedSaleAttrList展示的数据,应该是去掉spuSaleAttrList的数据后的
+      // this.selectedSaleAttrList = resArr[1].data // 更新基础实现选择列表(编辑状态)
     } catch {
       this.$message.error('获取数据失败，请刷新试试~')
     }
