@@ -35,8 +35,8 @@
             :before-upload="beforeAvatarUpload"
           2.限制上传图片的数量
             :limit="3" 限制数量
-            :disabled="spuForm.spuImageList.length>=3" 禁用按钮
-              当上传到最大值的时候,禁用按钮会禁用删除功能
+            :disabled="spuForm.spuImageList.length>=3" 禁用按钮(已经删除)
+              tip:当上传到最大值的时候,禁用按钮会禁用删除功能,所以已经删除
             :class="{ upload: spuForm.spuImageList.length >= 3 }" 隐藏按钮的样式
             <i class="el-icon-plus" v-show="spuForm.spuImageList.length < 3"></i> 隐藏按钮中图标
           3. 预览
@@ -233,14 +233,23 @@ export default {
       dialogImageUrl: ''
     }
   },
+
   computed: {
     // 实时将selecte进行计算?
-    selectedSaleAttrList() {
-      return this.baseSaleAttrList.filter((baseSaleAttr) => {
-        return !this.spuSaleAttrList.some((saleAttr) => {
-          return saleAttr.baseSaleAttrId === baseSaleAttr.id
+    selectedSaleAttrList: {
+      get() {
+        return this.baseSaleAttrList.filter((baseSaleAttr) => {
+          return !this.spuSaleAttrList.some((saleAttr) => {
+            return saleAttr.baseSaleAttrId === baseSaleAttr.id
+          })
         })
-      })
+      },
+      set(newVal){
+        // 报错nosetter,给他一个setter就行,但是这里不能改selectedSaleAttrList
+        // 否则会死循环
+        // console.log(newVal);
+        // this.selectedSaleAttrList=newVal
+      }
     },
     // 将请求到的图片进行格式化,因为<el-upload支持的数据结构不同
     formatImageList() {
@@ -356,8 +365,9 @@ export default {
     },
     // 照片墙:删除图片
     handleRemove(file) {
+      // console.log(file);
       this.spuForm.spuImageList = this.spuForm.spuImageList.filter(
-        (image) => image.imgUrl !== file.response.data
+        (image) => image.imgUrl !== file.url
       )
     },
     // 添加销售属性
@@ -408,17 +418,6 @@ export default {
       }
       callback('请上传至少一张图片')
     },
-    // 预览图片
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
-    // 删除图片
-    handleRemove(file) {
-      this.spuForm.spuImageList = this.spuForm.spuImageList.filter(
-        (image) => image.imgUrl !== file.response.data
-      )
-    },
     // 上传图片成功
     handleAvatarSuccess(res, file) {
       // res 上传成功的响应
@@ -438,7 +437,7 @@ export default {
     // 上传之前
     beforeAvatarUpload(file) {
       const imagesWhiteList = ['image/jpg', 'image/jpeg', 'image/png']
-      console.log(file)
+      // console.log(file)
       // 判断图片的类型
       const isImageOK = imagesWhiteList.indexOf(file.type) > -1
       // 判断图片的大小

@@ -91,7 +91,8 @@
 .upload {
   & > .el-upload--picture-card {
     cursor: auto;
-    background-color: transparent;
-    border-color: transparent;
+    // background-color: transparent;
+    // border-color: transparent;
+    display: none;
   }
 }
