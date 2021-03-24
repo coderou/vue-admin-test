@@ -19,7 +19,7 @@
       <el-table-column label="操作">
         <template v-slot="{ row, $index }">
           <!-- 1.添加按钮 -->
-          <el-tooltip content="添加spu" placement="bottom" effect="light"
+          <el-tooltip content="添加SKU" placement="bottom" effect="light"
             ><el-button
               type="primary"
               size="mini"
@@ -27,11 +27,12 @@
             ></el-button
           ></el-tooltip>
           <!-- 2.修改按钮 -->
-          <el-tooltip content="修改spu" placement="bottom" effect="light"
+          <el-tooltip content="修改SPU" placement="bottom" effect="light"
             ><el-button
               type="warning"
               size="mini"
               icon="el-icon-edit"
+              @click="editSpu(row)"
             ></el-button
           ></el-tooltip>
           <!-- 3.查看按钮 -->
@@ -77,7 +78,7 @@ import { reqGetSpuList, reqDeleteSpu } from '@api/spu'
 
 export default {
   name: 'SpuList',
-
+  props: ['isShowSpuList'],
   data() {
     return {
       spuList: [
@@ -122,6 +123,12 @@ export default {
   },
   // 方法:[]
   methods: {
+    // 修改SPU信息
+    editSpu(row) {
+      // console.log(row)
+      this.$emit('update:isShowSpuList', false)
+      this.$bus.$emit('editSpu',row.id)
+    },
     // 分页器:改变当前页数据量
     handleSizeChange(pageSize) {
       this.pageSize = pageSize

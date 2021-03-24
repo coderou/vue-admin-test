@@ -34,3 +34,18 @@ export const reqDeleteSpu = (spuId) => {
     url: `/admin/product/deleteSpu/${spuId}`
   })
 }
+
+// 4.根据SPUID获取最新的spu信息
+export const reqGetSpu = (spuId) => {
+  return request({
+    method: 'get',
+    url: `/admin/product/getSpuById/${spuId}`
+  })
+}
+// 5.根据SPUID获取最新的spu信息
+export const reqGetSpuImageList = (spuId) => {
+  return request({
+    method: 'get',
+    url: `/admin/product/spuImageList/${spuId}`
+  })
+}

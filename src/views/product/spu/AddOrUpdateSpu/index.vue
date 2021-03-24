@@ -43,6 +43,12 @@
           4. 删除
             :on-remove="handleRemove"
          -->
+        <img
+          v-for="image in spuForm.spuImageList"
+          :key="image.id"
+          :src="image.imgUrl"
+          :alt="image.imgName"
+        />
         <el-upload
           action="http://39.98.123.211/admin/product/fileUpload"
           list-type="picture-card"
@@ -168,7 +174,12 @@
 // api:获取所有品牌列表
 import { reqGetAllTrademarkList } from '@/api/trademark'
 // api:获取基础属性列表
-import { reqGetBaseSaleAttrList, reqSetNewAttr } from '@api/spu'
+import {
+  reqGetBaseSaleAttrList,
+  reqSetNewAttr,
+  reqGetSpu,
+  reqGetSpuImageList
+} from '@api/spu'
 import { mapState } from 'vuex'
 
 export default {
@@ -262,17 +273,24 @@ export default {
         return
       }
 
-      // 将工具input的值赋值改row
-      row.spuSaleAttrValueList.push({ saleAttrValueName: inputValue })
-
       // 也不能重复[编辑状态的value在attr.valueName  保存的数据在this.valueNameList]
-      const isRepeatCount = row.spuSaleAttrValueList.reduce((p, c) => {
+      // 遍历函数返回值是true,some是true,所有false,some为false
+      const isRepeat = row.spuSaleAttrValueList.some((saleAttrValue) => {
+        return saleAttrValue.saleAttrValueName === inputValue
+      })
+      if (isRepeat) {
+        this.$message.warning('输入的属性值不能重复')
+        return
+      }
+      /* const isRepeatCount = row.spuSaleAttrValueList.reduce((p, c) => {
         return p + (c.saleAttrValueName === inputValue ? 1 : 0)
       }, 0)
       if (isRepeatCount > 1) {
         this.$message.warning('属性值不可以重复')
         return
-      }
+      } */
+      // 将工具input的值赋值改row
+      row.spuSaleAttrValueList.push({ saleAttrValueName: inputValue })
       // 清空工具值
       this.newAttrTag = ''
       this.isInputTag = false
@@ -432,9 +450,38 @@ export default {
       // 返回 true 才 ok
       // 返回 false 不 ok
       return isImageOK && isLt
+    },
+    // 修改SPU信息
+    async editSpu(spuId) {
+      const res = await reqGetSpu(spuId)
+      console.log(res)
+      const img = await reqGetSpuImageList(spuId)
+      console.log(img)
+      /* 
+        spuForm: {
+        spuName: '',
+        tmId: '',
+        description: '',
+        spuImageList: [
+          // {
+          //   imgName: '',
+          //   imageUrl: ''
+          // }
+        ],
+        selectedSaleAttrId: '' // 选中的销售属性
+      },
+      */
+      this.spuForm.spuName = res.data.spuName
+      this.spuForm.spuImageList = img.data || []
+      console.log(this.spuForm)
+      this.spuForm.description = res.data.description
+      this.spuSaleAttrList = res.data.spuSaleAttrList
+      this.spuId = res.data.id
+      this.spuForm.tmId = res.data.tmId
     }
   },
   async mounted() {
+    this.$bus.$on('editSpu', this.editSpu)
     try {
       // Promise.all 方法特点：所有都成功，才成功，只要有一个失败就失败
       const resArr = await Promise.all([
