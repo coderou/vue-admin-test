@@ -261,8 +261,14 @@ export default {
         this.$message.error('请添加属性')
         return
       }
+
       // 将工具input的值赋值改row
       row.spuSaleAttrValueList.push({ saleAttrValueName: inputValue })
+
+      const RepeatCount = row.spuSaleAttrValueList.forEach((i) => {
+        console.log(i)
+      })
+
       // 清空工具值
       this.newAttrTag = ''
       this.isInputTag = false
@@ -349,6 +355,7 @@ export default {
     // 最下面的确认按钮(最终校验,发送请求添加数据)
     addSpu() {
       this.$refs.spuForm.validate(async (status) => {
+        if (!status) return
         try {
           // 整合data
           const data = {
