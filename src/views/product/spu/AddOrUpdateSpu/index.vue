@@ -511,7 +511,7 @@ export default {
             data.id = id
             // 传递数据
             const res = await reqUpdateNewAttr(data)
-            this.$message.success('添加成功')
+            this.$message.success('修改成功')
             this.toSpuList()
             this.$bus.$emit('updateSpuList')
           } catch (e) {
@@ -521,7 +521,7 @@ export default {
           try {
             // 传递数据
             const res = await reqSetNewAttr(data)
-            this.$message.success('修改')
+            this.$message.success('添加成功')
             this.toSpuList()
             this.$bus.$emit('updateSpuList')
           } catch (e) {
