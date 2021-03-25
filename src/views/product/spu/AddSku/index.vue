@@ -14,12 +14,14 @@
         tmId: "",
         weight: "",
        -->
+
       <el-form-item label="SKU名称" prop="skuName">
         <el-input
           v-model="skuForm.skuName"
           placeholder="请输入SKU名称"
         ></el-input>
       </el-form-item>
+
       <el-form-item label="价格" prop="price">
         <el-input-number
           class="input-number"
@@ -29,6 +31,7 @@
           :min="0"
         ></el-input-number>
       </el-form-item>
+
       <el-form-item label="重量" prop="weight">
         <el-input-number
           class="input-number"
@@ -38,6 +41,7 @@
           :min="0"
         ></el-input-number>
       </el-form-item>
+
       <el-form-item label="SKU描述" prop="skuDesc">
         <el-input
           type="textarea"
@@ -46,6 +50,7 @@
           placeholder="请输入SKU描述"
         ></el-input>
       </el-form-item>
+
       <el-form-item label="平台属性" prop="skuAttrValueList">
         <!-- 平台属性 -->
         <el-form :inline="true">
@@ -54,7 +59,7 @@
             :key="i.id"
             :label="i.attrName"
           >
-            <el-select v-model="i.isChecked">
+            <el-select v-model="i.coderou">
               <el-option
                 v-for="j in i.attrValueList"
                 :key="j.id"
@@ -66,6 +71,7 @@
         </el-form>
         <!-- end:平台属性 -->
       </el-form-item>
+
       <el-form-item label="销售属性" prop="skuSaleAttrValueList">
         <!-- 销售属性 -->
         <el-form :inline="true">
@@ -74,7 +80,7 @@
             :key="i.id"
             :label="i.saleAttrName"
           >
-            <el-select v-model="i.isChecked">
+            <el-select v-model="i.coderou">
               <el-option
                 v-for="j in i.spuSaleAttrValueList"
                 :key="j.id"
@@ -86,6 +92,7 @@
         </el-form>
         <!-- end:销售属性 -->
       </el-form-item>
+
       <el-form-item label="图片列表">
         <el-table
           class="spu-table"
@@ -97,7 +104,11 @@
           </el-table-column>
           <el-table-column label="图片">
             <template v-slot="{ row }">
-              <img :src="row.imgUrl" :alt="row.imgName" />
+              <img
+                :src="row.imgUrl"
+                :alt="row.imgName"
+                style="width: 100px; height: 100px"
+              />
             </template>
           </el-table-column>
           <el-table-column label="名称" prop="imgName"> </el-table-column>
@@ -108,6 +119,8 @@
           </el-table-column>
         </el-table>
       </el-form-item>
+
+      <!-- 确认 -->
       <el-form-item>
         <el-button type="primary" @click="addSku">确认</el-button>
         <el-button @click="$emit('update:isShowList', 0)">取消</el-button>
