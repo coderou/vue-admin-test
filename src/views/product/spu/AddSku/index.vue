@@ -113,8 +113,17 @@
           </el-table-column>
           <el-table-column label="名称" prop="imgName"> </el-table-column>
           <el-table-column label="操作">
-            <template v-slot="{ row, $index }">
-              <el-button type="primary" size="mini">设置默认图片</el-button>
+            <template v-slot="{ row }">
+              <el-button
+                type="primary"
+                v-show="!row.isDefault"
+                size="mini"
+                @click="setDefault(row)"
+                >设为默认</el-button
+              >
+              <el-button type="success" v-show="row.isDefault" size="mini"
+                >默认</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -136,6 +145,7 @@ import { reqGetAttrList } from '@/api/attr'
 import { reqGetSpuSaleAttrList } from '@/api/spu'
 // 获取图片[id]
 import { reqGetSpuImageList } from '@api/spu'
+import { reqAddSku } from '@api/sku'
 import { mapState } from 'vuex'
 
 export default {
@@ -198,7 +208,7 @@ export default {
         price: '', // 价格
         skuAttrValueList: [], // 平台属性
         skuDefaultImg: '', // 默认图片
-        skuDesc: '', //
+        skuDesc: '', // 商品描述(description)
         skuName: '', // sku名称
         skuSaleAttrValueList: [], // 销售属性
         tmId: '', // 品牌ID
@@ -210,7 +220,7 @@ export default {
         price: [{ required: true, message: '请输入值', trigger: 'blur' }]
       },
       // 选择的图片
-      multipleSelection:[]
+      multipleSelection: []
     }
   },
   computed: {
@@ -221,36 +231,99 @@ export default {
     })
   },
   methods: {
+    // 设置图片为默认
+    setDefault(row) {
+      console.log(row)
+      this.skuImageList.forEach((i) => {
+        i.isDefault = 0
+      })
+      row.isDefault = 1
+    },
     // 多选
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log(this.multipleSelection);
+      console.log(this.multipleSelection)
     },
     // 接收spuList传递过来的spuId等属性
     async receiveSpuDataToSku(row) {
       const { category1Id, category2Id, category3Id } = this
       this.spu = row // 保存传递的row
-      // console.log(row)
-      // 请求1:获取平台属性
+      // 1:获取平台属性
       const p1 = reqGetAttrList({
         category1Id,
         category2Id,
         category3Id
       })
-      // 请求2:获取销售属性
+      // 2:获取销售属性
       const p2 = reqGetSpuSaleAttrList(row.id)
-      // 请求3:获取图片
+      // 3:获取图片
       const p3 = reqGetSpuImageList(row.id)
-      // LinkStart!!!1
+
       const res = await Promise.all([p1, p2, p3])
       console.log(res)
       this.skuForm.skuAttrValueList = res[0].data
       // console.log(this.skuForm)
       this.skuForm.skuSaleAttrValueList = res[1].data
       this.skuImageList = res[2].data
+      const _this = this
+      this.skuImageList.forEach((i) => {
+        // 图片
+        // i.isDefault = 0
+        i.spuImgId = i.id // 处理id
+        delete i.id // 删除id
+        _this.$set(i, 'isDefault', 0)
+      })
+      this.skuForm.tmId = row.tmId // 品牌(trademark)
     },
     // 点击确定,添加sku
-    addSku() {}
+    async addSku() {
+      // 1.处理默认图片地址
+      const { imgUrl } = this.skuImageList.find((i) => {
+        return i.isDefault
+      })
+      // 2处理平台属性
+        const skuAttrValueList = this.skuForm.skuAttrValueList.map(
+        (i) => {
+          return {
+            attrId: i.id,
+            valueId: i.coderou
+          }
+        }
+      )
+      // 3.处理销售属性
+      const skuSaleAttrValueList = this.skuForm.skuSaleAttrValueList.map(
+        (i) => {
+          return {
+            saleAttrId: i.id,
+            saleAttrValueId: i.coderou
+          }
+        }
+      )
+      // 4.整合data
+      const data = {
+        spuId: this.spu.id, // SPUID
+        tmId: this.skuForm.tmId, // 品牌Id
+        skuName: this.skuForm.skuName, // 商品名称
+        price: this.skuForm.price, // 价格
+        weight: this.skuForm.weight, // 重量
+        category3Id: this.category3Id, // c3Id
+        skuAttrValueList, // 平台属性
+        skuSaleAttrValueList, // 销售属性
+        skuDesc: this.skuForm.skuDesc, // 商品描述(description)
+        skuImageList: this.multipleSelection, // 商品图片
+        skuDefaultImg: imgUrl // 默认图片
+      }
+      try {
+        const res = await reqAddSku(data)
+        console.log(res)
+        this.$message.success('添加SKU成功')
+
+        this.$bus.$emit('updateSpuList')
+        this.$emit('update:isShowList', 0) // 回到spuList
+      } catch (e) {
+        console.log(e)
+      }
+    }
   },
   mounted() {
     this.$bus.$on('receive', this.receiveSpuDataToSku)

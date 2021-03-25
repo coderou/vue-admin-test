@@ -1,0 +1,47 @@
+1.🍔🍔发现一个很重要的问题,就是看接口文档:
+  {
+    "category3Id": 0,
+    "createTime": "2021-03-25T05:42:50.014Z",
+    "id": 0,
+    "isSale": 0,
+    "price": 0,
+    "skuAttrValueList": [
+      {
+        "attrId": 0,
+        "attrName": "string",
+        "id": 0,
+        "skuId": 0,
+        "valueId": 0,
+        "valueName": "string"
+      }
+    ],
+    "skuDefaultImg": "string",
+    "skuDesc": "string",
+    "skuImageList": [
+      {
+        "id": 0,
+        "imgName": "string",
+        "imgUrl": "string",
+        "isDefault": "string",
+        "skuId": 0,
+        "spuImgId": 0
+      }
+    ],
+    "skuName": "string",
+    "skuSaleAttrValueList": [
+      {
+        "id": 0,
+        "saleAttrId": 0,
+        "saleAttrName": "string",
+        "saleAttrValueId": 0,
+        "saleAttrValueName": "string",
+        "skuId": 0,
+        "spuId": 0
+      }
+    ],
+    "spuId": 0,
+    "tmId": 0,
+    "weight": "string"
+  }
+  的时候,0表示不需要添加的,类似ID子类的,或者  "isSale": 0,之内的,就纯粹靠经验的
+2.
