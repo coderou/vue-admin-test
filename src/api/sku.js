@@ -10,3 +10,10 @@ export const reqAddSku = (data) => {
 }
 
 // 2.
+
+export const reqGetSkuBySpuId = (spuId) => {
+  return request({
+    method: 'get',
+    url: `/admin/product/findBySpuId/${spuId}`
+  })
+}

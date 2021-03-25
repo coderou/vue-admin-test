@@ -281,7 +281,7 @@ export default {
       const { imgUrl } = this.skuImageList.find((i) => {
         return i.isDefault
       })
-      // 2处理平台属性
+      // 2.处理平台属性
         const skuAttrValueList = this.skuForm.skuAttrValueList.map(
         (i) => {
           return {

@@ -41,7 +41,12 @@
           ></el-tooltip>
           <!-- 3.查看按钮 -->
           <el-tooltip content="查看sku列表" placement="bottom" effect="light"
-            ><el-button type="info" size="mini" icon="el-icon-info"></el-button
+            ><el-button
+              type="info"
+              size="mini"
+              icon="el-icon-info"
+              @click="showSku(row)"
+            ></el-button
           ></el-tooltip>
           <!-- 4.删除按钮 -->
           <!-- element-ui文档写错了 onConfirm -->
@@ -79,6 +84,7 @@
 <script type="text/ecmascript-6">
 import { mapState } from 'vuex'
 import { reqGetSpuList, reqDeleteSpu } from '@api/spu'
+import { reqGetSkuBySpuId } from '@/api/sku'
 
 export default {
   name: 'SpuList',
@@ -135,6 +141,11 @@ export default {
   },
   // 方法:[]
   methods: {
+    async showSku(row) {
+      // console.log(row);
+      const res = await reqGetSkuBySpuId(row.id)
+      console.log(res);
+    },
     // 修改SKU信息
     showAddSku(row) {
       this.$emit('update:isShowList', 2)
