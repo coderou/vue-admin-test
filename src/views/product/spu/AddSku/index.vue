@@ -41,16 +41,50 @@
       <el-form-item label="SKU描述" prop="skuDesc">
         <el-input
           type="textarea"
-          :row="3"
+          :row="5"
           v-model="skuForm.skuDesc"
           placeholder="请输入SKU描述"
         ></el-input>
       </el-form-item>
       <el-form-item label="平台属性" prop="skuAttrValueList">
-        xxxx
+        <!-- 平台属性 -->
+        <el-form :inline="true">
+          <el-form-item
+            v-for="i in skuForm.skuAttrValueList"
+            :key="i.id"
+            :label="i.attrName"
+          >
+            <el-select v-model="i.isChecked">
+              <el-option
+                v-for="j in i.attrValueList"
+                :key="j.id"
+                :label="j.valueName"
+                :value="j.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <!-- end:平台属性 -->
       </el-form-item>
       <el-form-item label="销售属性" prop="skuSaleAttrValueList">
-        xxxx
+        <!-- 销售属性 -->
+        <el-form :inline="true">
+          <el-form-item
+            v-for="i in skuForm.skuSaleAttrValueList"
+            :key="i.id"
+            :label="i.saleAttrName"
+          >
+            <el-select v-model="i.isChecked">
+              <el-option
+                v-for="j in i.spuSaleAttrValueList"
+                :key="j.id"
+                :label="j.saleAttrValueName"
+                :value="j.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <!-- end:销售属性 -->
       </el-form-item>
       <el-form-item label="图片列表">
         <el-table
@@ -149,15 +183,15 @@ export default {
       skuForm: {
         // SPU对应的SKU表单
         price: '', // 价格
-        skuAttrValueList: [], // sku属性值列表
-        skuDefaultImg: '', // sku默认图片
+        skuAttrValueList: [], // 平台属性
+        skuDefaultImg: '', // 默认图片
         skuDesc: '', //
         skuName: '', // sku名称
-        skuSaleAttrValueList: [], // sku销售属性列表
+        skuSaleAttrValueList: [], // 销售属性
         tmId: '', // 品牌ID
         weight: '' //
       },
-      skuImageList: [], // sku商品图片
+      skuImageList: [], // 商品图片
       rules: {
         // form表单校验规则
         price: [{ required: true, message: '请输入值', trigger: 'blur' }]
@@ -190,9 +224,10 @@ export default {
       // LinkStart!!!1
       const res = await Promise.all([p1, p2, p3])
       console.log(res)
-      this.skuForm.skuAttrValueList=res[0].data
-      this.skuForm.skuSaleAttrValueList=res[1].data
-      this.skuImageList=res[2].data
+      this.skuForm.skuAttrValueList = res[0].data
+      console.log(this.skuForm)
+      this.skuForm.skuSaleAttrValueList = res[1].data
+      this.skuImageList = res[2].data
     },
     // 点击确定,添加sku
     addSku() {}
