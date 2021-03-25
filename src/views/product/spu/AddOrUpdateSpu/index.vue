@@ -1,5 +1,5 @@
 <template>
-  <el-card class="card">
+  <el-card class="card" v-show="isShowList === 1">
     <el-form ref="spuForm" :model="spuForm" :rules="rules" label-width="80px">
       <!-- 1.收集SPU名称 -->
       <el-form-item label="SPU名称" prop="spuName">
@@ -138,12 +138,11 @@
           </el-table-column>
           <el-table-column label="操作" width="150">
             <template v-slot="{ row, $index }">
-              <!-- 必须使用具名插槽 -->
+              <!-- 删除销售属性 -->
               <el-button
                 type="danger"
                 size="mini"
                 icon="el-icon-delete"
-                slot="reference"
                 @click="deleteattrValue(row, $index)"
               ></el-button>
             </template>
@@ -174,7 +173,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'AddOrUpdateSpu',
-
+  props: ['isShowList'],
   data() {
     return {
       inputIndex: 0,
@@ -244,7 +243,7 @@ export default {
           })
         })
       },
-      set(newVal){
+      set(newVal) {
         // 报错nosetter,给他一个setter就行,但是这里不能改selectedSaleAttrList
         // 否则会死循环
         // console.log(newVal);
@@ -280,7 +279,7 @@ export default {
       return false
     },
     toSpuList() {
-      this.$emit('showSpuList')
+      this.$emit('update:isShowList', 0) // 通过改变spu的isShowList切换视图为spulist
     },
     // 光标离开输入框
     leaveInput(row) {
@@ -514,6 +513,7 @@ export default {
             this.$message.success('修改成功')
             this.toSpuList()
             this.$bus.$emit('updateSpuList')
+            this.$emit('update:isShowList', 0) // 回到spuList
           } catch (e) {
             console.log(e)
           }
@@ -524,6 +524,7 @@ export default {
             this.$message.success('添加成功')
             this.toSpuList()
             this.$bus.$emit('updateSpuList')
+            this.$emit('update:isShowList', 0) // 回到spuList
           } catch (e) {
             console.log(e)
           }

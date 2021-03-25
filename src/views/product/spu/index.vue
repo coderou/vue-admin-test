@@ -1,35 +1,25 @@
 <template>
   <div>
-    <!-- 三级导航 -->
-    <CategorySelector :disabled="!isShowList && !isShowSpuList" />
-    <!-- 商品展示 -->
-    <SpuList v-show="isShowSpuList" @showAddList="showAddList" :isShowSpuList.sync="isShowSpuList" />
-    <!-- 添加或者更新商品 -->
-    <AddOrUpdateSpu v-show="!isShowSpuList" @showSpuList="showSpuList" />
-    <!--
-      v-bind:xxx.sync
-        即传递数据，也传递更新数据的方法
-
-      :isShowSpuList="isShowSpuList"  会给组件只会传递一个 isShowSpuList 属性
-      :isShowSpuList.sync="isShowSpuList"
-        即会给组件传递一个 isShowSpuList 属性
-        也会给组件传递一个 更新 isShowSpuList 属性的自定义事件 @update:isShowSpuList
-          注意方法父组件不需要定义
-     -->
+    <CategorySelector :disabled="isShowList !== 0" />
+    <SpuList :isShowList.sync="isShowList" />
+    <AddOrUpdateSpu :isShowList.sync="isShowList" />
+    <AddSku :isShowList.sync="isShowList" />
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import SpuList from './SpuList'
 import AddOrUpdateSpu from './AddOrUpdateSpu'
+import AddSku from './AddSku'
 
 export default {
   name: 'Spu',
-  components: { SpuList, AddOrUpdateSpu },
+  components: { SpuList, AddOrUpdateSpu, AddSku },
   data() {
     return {
-      isShowList: false,
-      isShowSpuList: true
+      isShowList: 0 // 0:显示SpuList 1:显示AddOrUpdateSpu 2.显示AddSku
+      // isShowList: false,
+      // isShowSpuList: true
     }
   },
   methods: {

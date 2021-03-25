@@ -1,7 +1,10 @@
 <template>
-  <el-card>
+  <el-card v-show="isShowList === 0">
     <!-- 1.点击添加spu跳转到添加界面 -->
-    <el-button type="primary" icon="el-icon-plus" @click="addSpu"
+    <el-button
+      type="primary"
+      icon="el-icon-plus"
+      @click="$emit('update:isShowList', 1)"
       >添加SPU</el-button
     >
     <!-- 2.展示spu的列表 -->
@@ -24,6 +27,7 @@
               type="primary"
               size="mini"
               icon="el-icon-plus"
+              @click="showAddSku(row)"
             ></el-button
           ></el-tooltip>
           <!-- 2.修改按钮 -->
@@ -32,7 +36,7 @@
               type="warning"
               size="mini"
               icon="el-icon-edit"
-              @click="editSpu(row)"
+              @click="showUpdateSpu(row)"
             ></el-button
           ></el-tooltip>
           <!-- 3.查看按钮 -->
@@ -78,7 +82,7 @@ import { reqGetSpuList, reqDeleteSpu } from '@api/spu'
 
 export default {
   name: 'SpuList',
-  props: ['isShowSpuList'],
+  props: ['isShowList'],
   data() {
     return {
       spuList: [
@@ -98,6 +102,14 @@ export default {
       currentPage: 1,
       pageSize: 3
     }
+  },
+  watch: {
+    // 当isShowList发生变化,表示从其他页面回来了,更新界面
+    // isShowList(isShowList){
+    //   if(isShowList){
+    //     this.getSpuList()
+    //   }
+    // }
   },
   // 映射:category3Id
   computed: {
@@ -123,10 +135,15 @@ export default {
   },
   // 方法:[]
   methods: {
+    // 修改SKU信息
+    showAddSku(row) {
+      this.$emit('update:isShowList', 2)
+      this.$bus.$emit('receive', row)
+    },
     // 修改SPU信息
-    editSpu(row) {
-      this.$emit('update:isShowSpuList', false)
-      this.$bus.$emit('receive',row)
+    showUpdateSpu(spu) {
+      this.$emit('update:isShowList', 1)
+      this.$bus.$emit('receive', spu)
     },
     // 分页器:改变当前页数据量
     handleSizeChange(pageSize) {
@@ -159,9 +176,10 @@ export default {
         this.loading = false
       }
     },
-    addSpu() {
-      this.$emit('showAddList')
-    },
+    // 改变了012选择显示,不需要了
+    // addSpu() {
+    //   this.$emit('showAddList')
+    // },
     async deleteSpu(row) {
       const res = await reqDeleteSpu(row.id)
       this.$message.success('删除成功') // 提示删除成功
