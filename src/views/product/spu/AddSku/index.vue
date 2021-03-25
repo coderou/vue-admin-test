@@ -99,9 +99,9 @@
           :data="skuImageList"
           border
           style="width: 100%"
+          @selection-change="handleSelectionChange"
         >
-          <el-table-column type="index" label="序号" width="50">
-          </el-table-column>
+          <el-table-column type="selection" width="50"> </el-table-column>
           <el-table-column label="图片">
             <template v-slot="{ row }">
               <img
@@ -208,7 +208,9 @@ export default {
       rules: {
         // form表单校验规则
         price: [{ required: true, message: '请输入值', trigger: 'blur' }]
-      }
+      },
+      // 选择的图片
+      multipleSelection:[]
     }
   },
   computed: {
@@ -219,11 +221,16 @@ export default {
     })
   },
   methods: {
+    // 多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(this.multipleSelection);
+    },
     // 接收spuList传递过来的spuId等属性
     async receiveSpuDataToSku(row) {
       const { category1Id, category2Id, category3Id } = this
       this.spu = row // 保存传递的row
-      console.log(row)
+      // console.log(row)
       // 请求1:获取平台属性
       const p1 = reqGetAttrList({
         category1Id,
@@ -238,7 +245,7 @@ export default {
       const res = await Promise.all([p1, p2, p3])
       console.log(res)
       this.skuForm.skuAttrValueList = res[0].data
-      console.log(this.skuForm)
+      // console.log(this.skuForm)
       this.skuForm.skuSaleAttrValueList = res[1].data
       this.skuImageList = res[2].data
     },
