@@ -50,7 +50,7 @@ export const reqGetSpu = (spuId) => {
     url: `/admin/product/getSpuById/${spuId}`
   })
 }
-// 5.根据SPUID获取最新的spu信息
+// 5.获取图片
 export const reqGetSpuImageList = (spuId) => {
   return request({
     method: 'get',

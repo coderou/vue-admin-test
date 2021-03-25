@@ -83,7 +83,13 @@
 </template>
 
 <script type="text/ecmascript-6">
-import moduleName from '@/api/category';
+// 获取平台属性API(通过属性管理添加)[c1Id,c2Id,c3Id]
+import { reqGetAttrList } from '@/api/attr'
+// 获取销售属性API[id]
+import { reqGetSpuSaleAttrList } from '@/api/spu'
+// 获取图片[id]
+import { reqGetSpuImageList } from '@api/spu'
+import { mapState } from 'vuex'
 
 export default {
   name: 'AddSku',
@@ -158,11 +164,35 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      category1Id: (state) => state.category.category1Id,
+      category2Id: (state) => state.category.category2Id,
+      category3Id: (state) => state.category.category3Id
+    })
+  },
   methods: {
     // 接收spuList传递过来的spuId等属性
-    receiveSpuDataToSku(row) {
-      this.spu=row
-      // console.log(row)
+    async receiveSpuDataToSku(row) {
+      const { category1Id, category2Id, category3Id } = this
+      this.spu = row // 保存传递的row
+      console.log(row)
+      // 请求1:获取平台属性
+      const p1 = reqGetAttrList({
+        category1Id,
+        category2Id,
+        category3Id
+      })
+      // 请求2:获取销售属性
+      const p2 = reqGetSpuSaleAttrList(row.id)
+      // 请求3:获取图片
+      const p3 = reqGetSpuImageList(row.id)
+      // LinkStart!!!1
+      const res = await Promise.all([p1, p2, p3])
+      console.log(res)
+      this.skuForm.skuAttrValueList=res[0].data
+      this.skuForm.skuSaleAttrValueList=res[1].data
+      this.skuImageList=res[2].data
     },
     // 点击确定,添加sku
     addSku() {}

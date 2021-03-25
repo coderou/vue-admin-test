@@ -307,7 +307,11 @@ export default {
         return
       } */
       // 将工具input的值赋值改row
-      row.spuSaleAttrValueList.push({ saleAttrValueName: inputValue })
+      console.log(row);
+      row.spuSaleAttrValueList.push({
+        baseSaleAttrId: row.baseSaleAttrId,
+        saleAttrValueName: inputValue
+      })
       // 清空工具值
       this.newAttrTag = ''
       this.isInputTag = false
@@ -397,7 +401,6 @@ export default {
           return false
         }
       )
-
       // 3.push 进去spu列表
       this.spuSaleAttrList.push({
         baseSaleAttrId: selectedSaleAttr.id,
