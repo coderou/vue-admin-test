@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>echarts</title>
+    <style>
+      #chart {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 2. 准备一个具备宽高的容器 -->
+    <div id="chart"></div>
+    <!-- 1. 引入echarts -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.2/echarts.min.js"></script>
+    <script>
+      // 3. 初始化echarts实例
+      const myChart = echarts.init(document.getElementById('chart'));
+      // 4. 设置配置项
+      // const option = {
+      //   title: {
+      //     text: "ECharts 入门示例"
+      //   },
+      //   tooltip: {},
+      //   legend: {
+      //     data: ["销量"]
+      //   },
+      //   xAxis: {
+      //     data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+      //   },
+      //   yAxis: {},
+      //   series: [
+      //     {
+      //       name: "销量",
+      //       type: "bar",
+      //       data: [5, 20, 36, 10, 10, 20]
+      //     }
+      //   ]
+      // };
+
+      const option = {
+        color: ['#80FFA5', '#00DDFF'],
+        title: {
+          text: '渐变堆叠面积图',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985',
+            },
+          },
+        },
+        legend: {
+          data: ['预期', '实际'],
+        },
+        // toolbox: {
+        //   feature: {
+        //     saveAsImage: {}
+        //   }
+        // },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '交易金额(万元)',
+          },
+        ],
+        series: [
+          {
+            name: '预期',
+            type: 'line',
+            stack: '总量',
+            smooth: true,
+            lineStyle: {
+              width: 0,
+            },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(128, 255, 165)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(1, 191, 236)',
+                },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: [140, 232, 101, 264, 90, 340, 250],
+          },
+          {
+            name: '实际',
+            type: 'line',
+            stack: '总量',
+            smooth: true,
+            lineStyle: {
+              width: 0,
+            },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(0, 221, 255)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(77, 119, 255)',
+                },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: [120, 282, 111, 234, 220, 340, 310],
+          },
+        ],
+      };
+      // 5. 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

@@ -1,20 +1,21 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <!-- <div class="dashboard-text">name: {{ name }}</div> -->
+    <LineCHart />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import LineChart from './LineChart';
 
 export default {
   name: 'Dashboard',
+  components: { LineChart },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
-  }
-}
+    ...mapGetters(['name']),
+  },
+};
 </script>
 
 <style lang="scss" scoped>

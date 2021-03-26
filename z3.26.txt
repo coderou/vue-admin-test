@@ -8,4 +8,18 @@
 6.有时间自己看看ElementUI的一些组件
 7.flutter
 8.Value=Value.filter(Boolean) ==> 过滤为空的(比如undefined)
-9.
+9.折线图,柱状图,饼图
+10.上面的是echarts画法,下面的是其他库,D3
+11.
+  series:数据
+  bar:条形图/柱状图
+12.百度api可以申请一些东西,比如地球模型等
+13.初始化实例,配置对象option
+  areaStyle:渐变方式
+  tookbox:保存图片的工具,不需要可以删除掉
+14.webcomponents:html已经支持一些组件了,比如line
+  所以取组件名字的时候,就最好注意一下
+15.主题是要下载的,是一个json文件
+16.bmap是百度地图,echarts是百度的,比如需要地图,就可以用这个
+17.json后缀名可以省略不写
+18.
