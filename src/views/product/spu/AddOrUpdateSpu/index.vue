@@ -182,7 +182,7 @@ export default {
       // 工具人属性值tag
       newAttrTag: '',
       // 常量:限制图片的最大数量
-      MAX_IMAGE_LENGTH: 3,
+      MAX_IMAGE_LENGTH: 10,
       // 1.基础销售属性(原数据)
       baseSaleAttrList: [],
       // 2.基础销售属性(编辑中)(已经移动到计算属性)
@@ -252,10 +252,11 @@ export default {
     },
     // 将请求到的图片进行格式化,因为<el-upload支持的数据结构不同
     formatImageList() {
+      console.log(this.spuForm.spuImageList)
       return this.spuForm.spuImageList.map((i) => {
         return {
           // ...i, // 保留之前的数据
-          uid: i.uid, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
+          uid: i.id, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
           name: i.imgName,
           url: i.imgUrl
         }
@@ -307,7 +308,7 @@ export default {
         return
       } */
       // 将工具input的值赋值改row
-      console.log(row);
+      console.log(row)
       row.spuSaleAttrValueList.push({
         baseSaleAttrId: row.baseSaleAttrId,
         saleAttrValueName: inputValue
@@ -369,9 +370,12 @@ export default {
     // 照片墙:删除图片
     handleRemove(file) {
       // console.log(file);
-      this.spuForm.spuImageList = this.spuForm.spuImageList.filter(
-        (image) => image.imgUrl !== file.url
-      )
+      // this.spuForm.spuImageList = this.spuForm.spuImageList.filter(
+      //   (image) => image.imgUrl !== file.url
+      // )
+      const imgList = this.spuForm.spuImageList
+      const index = imgList.find((image) => image.imgUrl === file.url)
+      Array.prototype.splice.call(imgList, index, 1)
     },
     // 添加销售属性
     addSaleAttr() {
@@ -425,12 +429,19 @@ export default {
       // res 上传成功的响应
       // console.log(res, file)
       if (res.code === 200) {
-        this.spuForm.spuImageList.push({
-          // ...file, // 保留这些参数,不然会导致图片跳一跳的
-          uid: file.uid, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
+        // this.spuForm.spuImageList.push({
+        //   // ...file, // 保留这些参数,不然会导致图片跳一跳的
+        //   uid: file.uid, // 一个一个试出来的,需要这个东西,否则会刷新所有的图片,导致图片闪现
+        //   imgUrl: res.data,
+        //   imgName: file.name
+        // })
+        const imgList = this.spuForm.spuImageList
+        Array.prototype.push.call(imgList, {
+          uid: file.uid,
           imgUrl: res.data,
           imgName: file.name
         })
+        // console.log(this.spuForm.spuImageList);
         return
       }
 
