@@ -4,6 +4,7 @@
     <SpuList :isShowList.sync="isShowList" />
     <AddOrUpdateSpu :isShowList.sync="isShowList" />
     <AddSku :isShowList.sync="isShowList" />
+    <SkuList />
   </div>
 </template>
 
@@ -11,10 +12,11 @@
 import SpuList from './SpuList'
 import AddOrUpdateSpu from './AddOrUpdateSpu'
 import AddSku from './AddSku'
+import SkuList from './SkuList'
 
 export default {
   name: 'Spu',
-  components: { SpuList, AddOrUpdateSpu, AddSku },
+  components: { SpuList, AddOrUpdateSpu, AddSku, SkuList },
   data() {
     return {
       isShowList: 0 // 0:显示SpuList 1:显示AddOrUpdateSpu 2.显示AddSku

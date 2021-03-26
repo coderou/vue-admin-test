@@ -282,14 +282,12 @@ export default {
         return i.isDefault
       })
       // 2.处理平台属性
-        const skuAttrValueList = this.skuForm.skuAttrValueList.map(
-        (i) => {
-          return {
-            attrId: i.id,
-            valueId: i.coderou
-          }
+      const skuAttrValueList = this.skuForm.skuAttrValueList.map((i) => {
+        return {
+          attrId: i.id,
+          valueId: i.coderou
         }
-      )
+      })
       // 3.处理销售属性
       const skuSaleAttrValueList = this.skuForm.skuSaleAttrValueList.map(
         (i) => {

@@ -467,7 +467,7 @@ export default {
       // 返回 false 不 ok
       return isImageOK && isLt
     },
-    // 修改SPU信息
+    // 修改初始化,修改SPU信息
     async editSpu(row) {
       /* const res = await reqGetSpu(row.id)
       console.log(res)

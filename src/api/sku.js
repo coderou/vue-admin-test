@@ -9,8 +9,7 @@ export const reqAddSku = (data) => {
   })
 }
 
-// 2.
-
+// 2.根据spu获取sku列表
 export const reqGetSkuBySpuId = (spuId) => {
   return request({
     method: 'get',

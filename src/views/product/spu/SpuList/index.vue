@@ -143,8 +143,9 @@ export default {
   methods: {
     async showSku(row) {
       // console.log(row);
-      const res = await reqGetSkuBySpuId(row.id)
-      console.log(res);
+      // const res = await reqGetSkuBySpuId(row.id)
+      // console.log(res);
+      this.$bus.$emit('receiveSku', { spuId: row.id, spuName: row.SpuName })
     },
     // 修改SKU信息
     showAddSku(row) {
