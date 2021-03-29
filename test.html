@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <table>
+      <tr>
+        <td>你好td</td>
+        <td>你好td</td>
+        <td>你好td</td>
+        <td>你好td</td>
+      </tr>
+      <tr>
+        <td>你好td2</td>
+        <td>你好td2</td>
+        <td>你好td2</td>
+        <td>你好td2</td>
+      </tr>
+    </table>
+
+    <script>
+      function* gen() {
+        yield 1;
+        yield 2;
+        yield 3;
+      }
+      let res = gen();
+      console.log(res);
+    </script>
+    <script>
+      let arr = ['a', 'b', 'c', 'd'];
+      arr.splice(1, 2, '你好');
+      console.log(arr); // ['a','你好','d']
+    </script>
+    <script>
+      Array.prototype.name='你好'
+      let arr1 = [1, 2, 3];
+      for (var i in arr) {
+        console.log(i);
+      }
+      console.log(arr1);
+    </script> -->
+    <!-- <script> /* 重写斐波那契缓存版,失败 */
+      let arr = [1, 1, 2];
+      function temp(n) {
+        /* 
+          [1,1,2]
+          如果n=3 其返回值应该是 arr[0]+arr[1]
+          如果n=4 应该push进去 arr[1]+arr[2]
+        */
+        if (n === 1) return 1;
+        if (n === 2) return 1;
+        if (arr.length === n) return arr[n];
+        let re = arr[n - 3] + arr[n - 2];
+        arr.push[re];
+        return re;
+      }
+      function fn(n) {
+        if (arr[n]) return arr[n]; // 如果在arr中找到了对应的斐波那契函数值,返回
+        if (n === 1) return 1;
+        if (n === 2) return 1;
+        return fn(n - 1) + fn(n - 2);
+      }
+      console.log(fn(8));
+      console.log(temp(8));
+    </script> -->
+    <!-- <script>
+      // 一个很奇妙的思路,但是因为arr[n-1]为undefined的问题废弃了
+      // [1,1,2,3,5,8]
+      // [0,1,2,3,4,5]
+      let temp = [1, 1];
+      function get(n) {
+        // if (temp[n - 1]) return temp[n - 1]; // 如果temp[n]存在,返回
+        temp[n] = temp[`${n - 1}`] + temp[`${n - 2}`];
+        return temp[n];
+      }
+      let res = get(3);
+      console.log(res);
+    </script> -->
+    <!-- <script> 
+    // 尝试用对象解决时发现了,因为计算3的时候会直接去前面取,而这时候是没有计算的,所以会导致unfedined,结果就是NaN
+      let temp = {
+        '1': 1,
+        '2': 1,
+      };
+      function get(n) {
+        if (temp[n]) return temp[n];
+        temp[n] = temp[n - 1] + temp[n - 2];
+        console.log(temp);
+        return temp[n];
+      }
+      let res = get(4);
+      console.log(res);
+      console.log(temp);
+    </script> -->
+    <!-- <script>
+      // 卧槽草草草草草草,成功计算了10000位,但是因为超过了最大数字,Infinity了...
+      // [1,1,2,3,5,8]
+      // [0,1,2,3,4,5]
+      let temp = [1n, 1n];
+      function get(n) {
+        let m = 2;
+        // 核心算法层:
+        while (m < n) {
+          temp[m] = temp[m - 1] + temp[m - 2];
+          m++;
+        }
+        return temp[n - 1n];
+      }
+      let res = get(10000n);
+      console.log(res); 
+      // 答案(秒算...)
+      /* 
+        33644764876431783266621612005107543310302148460680063906564769974680081442166662368155595513633734025582065332680836159373734790483865268263040892463056431887354544369559827491606602099884183933864652731300088830269235673613135117579297437854413752130520504347701602264758318906527890855154366159582987279682987510631200575428783453215515103870818298969791613127856265033195487140214287532698187962046936097879900350962302291026368131493195275630227837628441540360584402572114334961180023091208287046088923962328835461505776583271252546093591128203925285393434620904245248929403901706233888991085841065183173360437470737908552631764325733993712871937587746897479926305837065742830161637408969178426378624212835258112820516370298089332099905707920064367426202389783111470054074998459250360633560933883831923386783056136435351892133279732908133732642652633989763922723407882928177953580570993691049175470808931841056146322338217465637321248226383092103297701648054726243842374862411453093812206564914032751086643394517512161526545361333111314042436854805106765843493523836959653428071768775328348234345557366719731392746273629108210679280784718035329131176778924659089938635459327894523777674406192240337638674004021330343297496902028328145933418826817683893072003634795623117103101291953169794607632737589253530772552375943788434504067715555779056450443016640119462580972216729758615026968443146952034614932291105970676243268515992834709891284706740862008587135016260312071903172086094081298321581077282076353186624611278245537208532365305775956430072517744315051539600905168603220349163222640885248852433158051534849622434848299380905070483482449327453732624567755879089187190803662058009594743150052402532709746995318770724376825907419939632265984147498193609285223945039707165443156421328157688908058783183404917434556270520223564846495196112460268313970975069382648706613264507665074611512677522748621598642530711298441182622661057163515069260029861704945425047491378115154139941550671256271197133252763631939606902895650288268608362241082050562430701794976171121233066073310059947366875n
+      */
+    </script> -->
+    <!-- 我自己的 <script>
+      var start = Date.now();
+      var temp = [1n, 1n];
+      function get(n) {
+      var m = 2;
+        // 核心算法层:
+        while (m < n) {
+          temp[m] = temp[m - 1] + temp[m - 2];
+          m++;
+        }
+        return temp[n - 1n];
+      }
+      // var res = get(100000n);
+      var res = get(100000n);
+      var end = Date.now();
+      console.log(res);
+      console.log(end - start); // 单位数ms级,即使是100000,也不会超过1s
+    </script> -->
+    <!-- 网上最快<s>
+      var start = Date.now();
+      function fibonacci(n) {
+        var res1 = 1n;
+        var res2 = 1n;
+        var sum = res2;
+        for (var i = 1; i < n; i++) {
+          sum = res1 + res2;
+          res1 = res2;
+          res2 = sum;
+        }
+        return sum;
+      }
+      console.log(fibonacci(100000));
+      var end = Date.now();
+      console.log(end - start);
+    </script> -->
+    <!-- 好吧,还是你牛皮,不用数组还是要更快的啊-->
+    <!-- <script>
+      function fn(name) {
+        if (name) {
+          this.name = name;
+        }
+        return this;
+      }
+      var a = fn('name1');
+      console.log(fn);
+      console.log(a.name);
+    </script> -->
+    <!-- <div class="box">a</div>
+    <div class="box2">a</div> -->
+    <!-- <style>
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: aquamarine;
+        border: 50px solid rebeccapurple;
+        padding: 50px;
+      }
+      .box2 {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+      }
+    </style> -->
+    <!-- <script>
+      let box = document.querySelector('.box2');
+      /* box.oncontextmenu = function() {
+        console.log(1);
+      }; */
+      // box.addEventListener('contextmenu', function() {
+      //   console.log(2);
+      // });
+      box.onclick = function() {
+        console.log(window.cookie);
+      };
+    </script> -->
+    <!-- 数组去重? -->
+    <!-- <script>
+      Array.prototype.uniq = function() {
+        // 长度只有 1，直接返回当前的拷贝
+        if (this.length <= 1) {
+          return this.slice(0);
+        }
+        var aResult = [];
+        for (var i = 0, l = this.length; i < l; i++) {
+          if (!_fExist(aResult, this[i])) {
+            aResult.push(this[i]);
+          }
+        }
+        return aResult;
+        // 判断是否重复
+        function _fExist(aTmp, o) {
+          if (aTmp.length === 0) {
+            return false;
+          }
+          var tmp;
+          for (var i = 0, l = aTmp.length; i < l; i++) {
+            tmp = aTmp[i];
+            if (tmp === o) {
+              return true;
+            }
+            // NaN 需要特殊处理 (!NaN  = true)
+            if (
+              !o &&
+              !tmp &&
+              tmp !== undefined &&
+              o !== undefined &&
+              isNaN(tmp) &&
+              isNaN(o)
+            ) {
+              return true;
+            }
+          }
+          return false;
+        }
+      };
+    </script> -->
+    <script>
+      
+    </script>
+  </body>
+</html>
