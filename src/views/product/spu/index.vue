@@ -33,7 +33,10 @@ export default {
     showAddList() {
       this.isShowSpuList = false
     }
-  }
+  },
+  mounted() {
+    console.log(1)
+  },
 }
 </script>
 

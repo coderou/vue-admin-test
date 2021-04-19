@@ -33,7 +33,7 @@ export default {
   name: 'SkuList',
   data() {
     return {
-      visible: true,
+      visible: false,
       skuList: [],
       spuName: '',
       loading: false

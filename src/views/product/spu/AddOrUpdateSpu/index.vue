@@ -308,7 +308,7 @@ export default {
         return
       } */
       // 将工具input的值赋值改row
-      console.log(row)
+      // console.log(row)
       row.spuSaleAttrValueList.push({
         baseSaleAttrId: row.baseSaleAttrId,
         saleAttrValueName: inputValue

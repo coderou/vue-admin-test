@@ -242,7 +242,7 @@ export default {
     // 多选
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log(this.multipleSelection)
+      // console.log(this.multipleSelection)
     },
     // 接收spuList传递过来的spuId等属性
     async receiveSpuDataToSku(row) {
@@ -313,7 +313,7 @@ export default {
       }
       try {
         const res = await reqAddSku(data)
-        console.log(res)
+        // console.log(res)
         this.$message.success('添加SKU成功')
 
         this.$bus.$emit('updateSpuList')
